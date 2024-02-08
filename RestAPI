@@ -1,0 +1,28 @@
+from sqlalchemy.orm import sessionmaker
+
+# Tabloyu tanımla
+class Arena(Base):
+    __tablename__ = 'arena'
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    location = Column(Geometry('POINT'))
+
+# Tabloyu veritabanına yansıt
+Base.metadata.create_all(engine)
+
+# Session oluştur
+Session = sessionmaker(bind=engine)
+session = Session()
+
+# Veritabanına yeni bir arena ekle
+new_arena = Arena(name='Example Arena', location='POINT(0 0)')  # Örnek bir konum verildi
+session.add(new_arena)
+session.commit()
+
+# Veritabanından arenaları sorgula
+arenas = session.query(Arena).all()
+for arena in arenas:
+    print(arena.id, arena.name, arena.location)
+
+# Session'ı kapat
+session.close()
